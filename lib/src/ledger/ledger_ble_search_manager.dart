@@ -1,13 +1,9 @@
 import 'dart:async';
 
 import 'package:ledger_flutter/ledger_flutter.dart';
+import 'package:ledger_flutter/src/ledger/ledger_ble_device_info.dart';
 
 class LedgerBleSearchManager extends BleSearchManager {
-  /// Ledger Nano X service id
-  static const serviceId = '13D63400-2C97-0004-0000-4C6564676572';
-  static const writeCharacteristicKey = '13D63400-2C97-0004-0002-4C6564676572';
-  static const notifyCharacteristicKey = '13D63400-2C97-0004-0001-4C6564676572';
-
   final _bleManager = FlutterReactiveBle();
   final LedgerOptions _options;
   final PermissionRequestCallback? onPermissionRequest;
@@ -42,12 +38,16 @@ class LedgerBleSearchManager extends BleSearchManager {
     streamController = StreamController.broadcast();
 
     _scanSubscription?.cancel();
-    _scanSubscription = _bleManager.scanForDevices(
-      withServices: [Uuid.parse(serviceId)],
+    _scanSubscription = _bleManager
+        .scanForDevices(
+      withServices: LedgerBleDeviceInfo.values
+          .map((e) => Uuid.parse(e.serviceId))
+          .toList(),
       scanMode: options?.scanMode ?? _options.scanMode,
       requireLocationServicesEnabled: options?.requireLocationServicesEnabled ??
           _options.requireLocationServicesEnabled,
-    ).listen(
+    )
+        .listen(
       (device) {
         if (_scannedIds.contains(device.id)) {
           return;

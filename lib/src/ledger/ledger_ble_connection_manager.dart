@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:ledger_flutter/ledger_flutter.dart';
 
 class LedgerBleConnectionManager extends BleConnectionManager {
-  /// Ledger Nano X service id
-  static const serviceId = '13D63400-2C97-0004-0000-4C6564676572';
-
   final _bleManager = FlutterReactiveBle();
   final LedgerOptions _options;
   final PermissionRequestCallback? onPermissionRequest;
